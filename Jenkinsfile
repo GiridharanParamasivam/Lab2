@@ -3,12 +3,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Checkout the code from SCM (Git)
                 checkout scm
             }
         }
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                // Run Maven commands using Windows batch
+                bat 'mvn clean install'
             }
         }
     }
