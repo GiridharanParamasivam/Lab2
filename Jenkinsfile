@@ -21,12 +21,12 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                sh 'docker build -t your-docker-hub-username/your-image-name:latest .'
+                sh 'docker build -t giridharansivam/devops_lab2:latest .'
             }
         }
         stage('Docker Push') {
             steps {
-                sh 'docker push your-docker-hub-username/your-image-name:latest'
+                sh 'docker push giridharansivam/devops_lab2:latest'
             }
         }
     }

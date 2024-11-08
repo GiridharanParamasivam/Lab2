@@ -1,33 +1,23 @@
-pipeline {
-    agent any
-    environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials-id')
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-        stage('Build Maven Project') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-        stage('Docker Login') {
-            steps {
-                sh 'echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin'
-            }
-        }
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t giridharansivam/devops_lab2:latest .'
-            }
-        }
-        stage('Docker Push') {
-            steps {
-                sh 'docker push giridharansivam/devops_lab2:latest'
-            }
-        }
-    }
-}
+# Start with a Maven image to build the application
+FROM maven:3.8.1-jdk-11 AS build
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy all project files to the working directory
+COPY . .
+
+# Build the project using Maven, creating a JAR file in the target directory
+RUN mvn clean package
+
+# Start with a lightweight JRE image for running the application
+FROM openjdk:11-jre
+
+# Set the working directory in the runtime environment
+WORKDIR /app
+
+# Copy the built JAR file from the build stage to the runtime stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Run the application using the JAR file
+ENTRYPOINT ["java", "-jar", "app.jar"]
