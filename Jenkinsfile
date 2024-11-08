@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_USERNAME = 'giridharansivam'
-        DOCKER_PASSWORD = 'Girisabari1999@'
+        DOCKER_PASSWORD = 'Girisabari1999^@'
     }
     stages {
         stage('Checkout') {
@@ -27,9 +27,7 @@ pipeline {
                     if (isUnix()) {
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     } else {
-                        bat '''
-                            echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
-                        '''
+                        bat 'docker login -u %DOCKER_USERNAME% -p "%DOCKER_PASSWORD%"'
                     }
                 }
             }
