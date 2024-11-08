@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_USERNAME = 'giridharansivam'
-        DOCKER_PASSWORD = 'Girisabari1999^@'
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials-id')
     }
     stages {
         stage('Checkout') {
@@ -25,9 +24,13 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        // For Unix/Linux systems
+                        sh 'echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
                     } else {
-                        bat 'docker login -u %DOCKER_USERNAME% -p "%DOCKER_PASSWORD%"'
+                        // For Windows systems
+                        bat '''
+                            echo %DOCKER_CREDENTIALS_PSW% | docker login -u %DOCKER_CREDENTIALS_USR% --password-stdin
+                        '''
                     }
                 }
             }
