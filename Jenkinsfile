@@ -11,22 +11,46 @@ pipeline {
         }
         stage('Build Maven Project') {
             steps {
-                sh 'mvn clean install'
+                script {
+                    if (isUnix()) {
+                        sh 'mvn clean install'
+                    } else {
+                        bat 'mvn clean install'
+                    }
+                }
             }
         }
         stage('Docker Login') {
             steps {
-                sh 'echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin'
+                script {
+                    if (isUnix()) {
+                        sh 'echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin'
+                    } else {
+                        bat 'echo %DOCKER_HUB_CREDENTIALS_PSW% | docker login -u %DOCKER_HUB_CREDENTIALS_USR% --password-stdin'
+                    }
+                }
             }
         }
         stage('Docker Build') {
             steps {
-                sh 'docker build -t giridharansivam/devops_lab2:latest .'
+                script {
+                    if (isUnix()) {
+                        sh 'docker build -t giridharansivam/devops_lab2:latest .'
+                    } else {
+                        bat 'docker build -t giridharansivam/devops_lab2:latest .'
+                    }
+                }
             }
         }
         stage('Docker Push') {
             steps {
-                sh 'docker push giridharansivam/devops_lab2:latest'
+                script {
+                    if (isUnix()) {
+                        sh 'docker push giridharansivam/devops_lab2:latest'
+                    } else {
+                        bat 'docker push giridharansivam/devops_lab2:latest'
+                    }
+                }
             }
         }
     }
