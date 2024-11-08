@@ -24,12 +24,12 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        // For Unix/Linux systems
-                        sh 'echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
+                        // Unix/Linux systems with --password-stdin
+                        sh 'echo $DOCKER_CREDENTIALS_PSW | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
                     } else {
-                        // For Windows systems
+                        // Windows systems with -p flag
                         bat '''
-                            echo %DOCKER_CREDENTIALS_PSW% | docker login -u %DOCKER_CREDENTIALS_USR% --password-stdin
+                            docker login -u "%DOCKER_CREDENTIALS_USR%" -p "%DOCKER_CREDENTIALS_PSW%"
                         '''
                     }
                 }
